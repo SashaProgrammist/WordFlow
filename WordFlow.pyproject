@@ -2,6 +2,7 @@
     "files": [
         "mainwindow.py",
         "form.ui",
-        "WordSeed.py"
+        "WordSeed.py",
+        "FlowControl.py"
     ]
 }
