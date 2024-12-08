@@ -24,7 +24,7 @@ class MainWindow(QMainWindow):
     @Slot()
     def say_hello(self):
         wb_patch = QFileDialog.getOpenFileName()[0]
-        print(wb_patch)
+        self.wordSead.apdate(wb_patch)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
