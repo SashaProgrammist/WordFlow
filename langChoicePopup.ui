@@ -13,6 +13,25 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="mainLabel">
+     <property name="text">
+      <string>Select language:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QListWidget" name="languageListWidget"/>
+   </item>
+   <item>
+    <widget class="QPushButton" name="buttonEnd">
+     <property name="text">
+      <string>confirm language</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>

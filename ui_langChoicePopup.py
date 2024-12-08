@@ -15,13 +15,31 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QSizePolicy, QWidget)
+from PySide6.QtWidgets import (QApplication, QLabel, QListWidget, QListWidgetItem,
+    QPushButton, QSizePolicy, QVBoxLayout, QWidget)
 
 class Ui_Form(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
         Form.resize(430, 407)
+        self.verticalLayout = QVBoxLayout(Form)
+        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.mainLabel = QLabel(Form)
+        self.mainLabel.setObjectName(u"mainLabel")
+
+        self.verticalLayout.addWidget(self.mainLabel)
+
+        self.languageListWidget = QListWidget(Form)
+        self.languageListWidget.setObjectName(u"languageListWidget")
+
+        self.verticalLayout.addWidget(self.languageListWidget)
+
+        self.buttonEnd = QPushButton(Form)
+        self.buttonEnd.setObjectName(u"buttonEnd")
+
+        self.verticalLayout.addWidget(self.buttonEnd)
+
 
         self.retranslateUi(Form)
 
@@ -30,5 +48,7 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
+        self.mainLabel.setText(QCoreApplication.translate("Form", u"Select language:", None))
+        self.buttonEnd.setText(QCoreApplication.translate("Form", u"confirm language", None))
     # retranslateUi
 

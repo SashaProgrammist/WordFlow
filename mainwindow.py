@@ -26,6 +26,8 @@ class MainWindow(QMainWindow):
         self.wordSead = WordSeed("data/test.db")
         self.flowControl = FlowControl("data/test.db")
 
+        self.curLeng = None
+
     @Slot()
     def abdateDB(self):
         wb_patch = QFileDialog.getOpenFileName()[0]
@@ -33,9 +35,9 @@ class MainWindow(QMainWindow):
 
     @Slot()
     def open_popup(self):
-        popup = LangChoicePopupWindow(self)
-        if popup.exec():  # Ожидание закрытия окна
-            print("Popup closed with accept")
+        popup = LangChoicePopupWindow(self.flowControl.getAllLanguages(), self)
+        if popup.exec():
+            self.curLeng = popup.selected_language
 
 
 if __name__ == "__main__":
