@@ -11,20 +11,32 @@ from PySide6.QtCore import Slot
 from ui_form import Ui_MainWindow
 
 from WordSeed import WordSeed
+from FlowControl import FlowControl
+from LangChoicePopupWindow import LangChoicePopupWindow
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.ui.pushButton.clicked.connect(self.say_hello)
+
+        self.ui.buttonApdateDB.clicked.connect(self.abdateDB)
+        self.ui.buttonChoiceLeng.clicked.connect(self.open_popup)
 
         self.wordSead = WordSeed("data/test.db")
+        self.flowControl = FlowControl("data/test.db")
 
     @Slot()
-    def say_hello(self):
+    def abdateDB(self):
         wb_patch = QFileDialog.getOpenFileName()[0]
         self.wordSead.apdate(wb_patch)
+
+    @Slot()
+    def open_popup(self):
+        popup = LangChoicePopupWindow(self)
+        if popup.exec():  # Ожидание закрытия окна
+            print("Popup closed with accept")
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

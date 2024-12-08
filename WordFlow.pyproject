@@ -3,6 +3,8 @@
         "mainwindow.py",
         "form.ui",
         "WordSeed.py",
-        "FlowControl.py"
+        "FlowControl.py",
+        "langChoicePopup.ui",
+        "LangChoicePopupWindow.py"
     ]
 }
