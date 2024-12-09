@@ -1,6 +1,7 @@
 # This Python file uses the following encoding: utf-8
 import sys
 from math import sin, pi
+from time import sleep
 
 from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox, QSlider
 from PySide6.QtCore import Slot, QTimer
@@ -47,8 +48,11 @@ class MainWindow(QMainWindow):
         self.ui.buttonContinue.clicked.connect(self.mainProcess)
         self.ui.speedSlider.valueChanged.connect(self.cangeSpeed)
 
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.gradualDisplay)
+        self.timerDisplay = QTimer(self)
+        self.timerDisplay.timeout.connect(self.gradualDisplay)
+        self.timerBreforeShow = QTimer(self)
+        self.timerBreforeShow.timeout.connect(self.breforeShow)
+
 
         self.wordSead = WordSeed("data/test.db")
         self.flowControl = FlowControl("data/test.db")
@@ -86,12 +90,12 @@ class MainWindow(QMainWindow):
 
         self.ui.labelTranslationText.setText("")
 
-        self.timer.start(self.speedDisplay)
+        self.timerBreforeShow.start(2000)
 
     @Slot()
     def gradualDisplay(self):
         if self.curTrans is None or not self.curTrans["phrase"]:
-            self.timer.stop()
+            self.timerDisplay.stop()
             return
 
         text_new = (self.ui.labelTranslationText.text()
@@ -105,8 +109,13 @@ class MainWindow(QMainWindow):
     def cangeSpeed(self, sliderValue):
         self.speedDisplay = self.convertSliderValue.transform(sliderValue)
 
-        if self.timer.isActive():
-            self.timer.setInterval(self.speedDisplay)
+        if self.timerDisplay.isActive():
+            self.timerDisplay.setInterval(self.speedDisplay)
+
+    @Slot()
+    def breforeShow(self):
+        self.timerBreforeShow.stop()
+        self.timerDisplay.start(self.speedDisplay)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
