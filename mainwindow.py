@@ -25,7 +25,7 @@ class MainWindow(QMainWindow):
         self.ui.buttonContinue.clicked.connect(self.mainProcess)
 
         self.timer = QTimer(self)
-        # self.timer.
+        self.timer.timeout.connect(self.gradualDisplay)
 
         self.wordSead = WordSeed("data/test.db")
         self.flowControl = FlowControl("data/test.db")
@@ -57,8 +57,24 @@ class MainWindow(QMainWindow):
 
         self.curTrans = self.flowControl.getAnyTranslate(self.curLeng, self.curPhrase["phrase_set_id"])
 
-        self.ui.labelTranslationText.setText(self.curTrans["phrase"])
+        self.curTrans["phrase"] = list(self.curTrans["phrase"].split())
 
+        self.ui.labelTranslationText.setText("")
+
+        self.timer.start(1000)
+
+    @Slot()
+    def gradualDisplay(self):
+        if self.curTrans is None or not self.curTrans["phrase"]:
+            self.timer.stop()
+            return
+
+        text_new = (self.ui.labelTranslationText.text()
+                    + " " + self.curTrans["phrase"][0])
+
+        self.ui.labelTranslationText.setText(text_new)
+
+        self.curTrans["phrase"] = self.curTrans["phrase"][1:]
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
