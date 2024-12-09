@@ -1,7 +1,8 @@
 # This Python file uses the following encoding: utf-8
 import sys
+from math import sin, pi
 
-from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox
+from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox, QSlider
 from PySide6.QtCore import Slot, QTimer
 
 # Important:
@@ -14,6 +15,27 @@ from WordSeed import WordSeed
 from FlowControl import FlowControl
 from LangChoicePopupWindow import LangChoicePopupWindow
 
+STANDARD_DELAY = 1000
+
+class ConvertSliderValue:
+    def __init__(self, slider: QSlider, amplitude: float):
+        self.slider = slider
+        self.amplitude = amplitude
+
+    def transform(self, value):
+        value = 1 - (
+              (value - self.slider.minimum())
+            / (self.slider.maximum() - self.slider.minimum()))
+
+        value = (value
+            - (1 - 1 / self.amplitude) / (self.amplitude - 1 / self.amplitude)
+            * sin(pi * value))
+
+        value = value * (self.amplitude - 1 / self.amplitude) + 1 / self.amplitude
+
+        return value * STANDARD_DELAY
+
+
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -23,16 +45,19 @@ class MainWindow(QMainWindow):
         self.ui.buttonApdateDB.clicked.connect(self.abdateDB)
         self.ui.buttonChoiceLeng.clicked.connect(self.open_popup)
         self.ui.buttonContinue.clicked.connect(self.mainProcess)
+        self.ui.speedSlider.valueChanged.connect(self.cangeSpeed)
 
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.gradualDisplay)
 
         self.wordSead = WordSeed("data/test.db")
         self.flowControl = FlowControl("data/test.db")
+        self.convertSliderValue = ConvertSliderValue(self.ui.speedSlider, 3)
 
         self.curLeng = None
         self.curPhrase = None
         self.curTrans = None
+        self.speedDisplay = STANDARD_DELAY
 
     @Slot()
     def abdateDB(self):
@@ -57,11 +82,11 @@ class MainWindow(QMainWindow):
 
         self.curTrans = self.flowControl.getAnyTranslate(self.curLeng, self.curPhrase["phrase_set_id"])
 
-        self.curTrans["phrase"] = list(self.curTrans["phrase"].split())
+        self.curTrans["phrase"] = list(self.curTrans["phrase"].split())[::-1]
 
         self.ui.labelTranslationText.setText("")
 
-        self.timer.start(1000)
+        self.timer.start(self.speedDisplay)
 
     @Slot()
     def gradualDisplay(self):
@@ -70,11 +95,18 @@ class MainWindow(QMainWindow):
             return
 
         text_new = (self.ui.labelTranslationText.text()
-                    + " " + self.curTrans["phrase"][0])
+                    + " " + self.curTrans["phrase"][-1])
 
         self.ui.labelTranslationText.setText(text_new)
 
-        self.curTrans["phrase"] = self.curTrans["phrase"][1:]
+        self.curTrans["phrase"].pop()
+
+    @Slot(int)
+    def cangeSpeed(self, sliderValue):
+        self.speedDisplay = self.convertSliderValue.transform(sliderValue)
+
+        if self.timer.isActive():
+            self.timer.setInterval(self.speedDisplay)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
