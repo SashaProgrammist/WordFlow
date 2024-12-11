@@ -79,6 +79,9 @@ class MainWindow(QMainWindow):
             QMessageBox.warning(self, "Warning", "Please select a language!")
             return
 
+        if self.timerDisplay.isActive() or self.timerBreforeShow.isActive():
+            return
+
         self.curPhrase = self.flowControl.getAnyPhrase(self.curLeng)
 
         self.ui.labelOriginalText.setText(self.curPhrase["phrase"])

@@ -9,6 +9,8 @@ class FlowControl:
 
         self.conn.commit()
 
+        self.i = 0
+
     def getAllLanguages(self):
         languages = self.cursor.execute("""
         SELECT DISTINCT language
@@ -24,7 +26,8 @@ class FlowControl:
         WHERE language='{language}';
         """).fetchall()
 
-        result = choice(result)
+        result = result[self.i % len(result)]
+        self.i += 1
 
         result = {
             "id" : result[0],
