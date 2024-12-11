@@ -1,7 +1,6 @@
 # This Python file uses the following encoding: utf-8
 import sys
 from math import sin, pi
-from time import sleep
 
 from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox, QSlider
 from PySide6.QtCore import Slot, QTimer
