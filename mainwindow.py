@@ -1,6 +1,7 @@
 # This Python file uses the following encoding: utf-8
 import sys
 from math import sin, pi
+from random import choice
 
 from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox, QSlider
 from PySide6.QtCore import Slot, QTimer
@@ -82,17 +83,20 @@ class MainWindow(QMainWindow):
         if self.timerDisplay.isActive() or self.timerBreforeShow.isActive():
             return
 
+        if self.curTrans and self.curTrans["phrase"]:
+            return
+
         self.curPhrase = self.flowControl.getAnyPhrase(self.curLeng)
 
         self.ui.labelOriginalText.setText(self.curPhrase["phrase"])
 
         self.curTrans = self.flowControl.getAnyTranslate(self.curLeng, self.curPhrase["phrase_set_id"])
 
-        self.curTrans["phrase"] = list(self.curTrans["phrase"].split())[::-1]
+        self.curTrans["phrase"] = list(self.curTrans["phrase"][::-1].lower())
 
-        self.ui.labelTranslationText.setText("")
+        self.ui.labelTranslationText.setText(r"<html><head/><body><p><br/></p></body></html>")
 
-        self.timerBreforeShow.start(2000)
+        # self.timerBreforeShow.start(2000)
 
     @Slot()
     def gradualDisplay(self):
@@ -118,6 +122,37 @@ class MainWindow(QMainWindow):
     def breforeShow(self):
         self.timerBreforeShow.stop()
         self.timerDisplay.start(self.speedDisplay)
+
+    @Slot(str)
+    def textChange(self, change: str):
+        if not change:
+            return
+
+        if self.curTrans and not self.curTrans["phrase"]:
+            QMessageBox.warning(self, "Warning", "Please press continue button!")
+            return
+
+        color = choice(["FF0000", "00FF00"])
+        if (self.curTrans):
+            if (change[-1].lower() == self.curTrans["phrase"][-1]):
+                self.curTrans["phrase"].pop()
+                color = "00FF00"
+            else:
+                color = "FF0000"
+                if change[-1] == " ":
+                    change = "_"
+
+        shift = 0
+        if self.ui.labelTranslationText.text()[-34] == 'F':
+            shift = -38
+
+        text_new = (self.ui.labelTranslationText.text()[:-18 + shift]
+                    + f'<span style=" color:#{color};">{change[-1]}</span>'
+                    + self.ui.labelTranslationText.text()[-18:])
+
+        self.ui.labelTranslationText.setText(text_new)
+
+        self.ui.lineEdit.clear()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

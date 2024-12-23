@@ -94,8 +94,14 @@
           <property name="cursor">
            <cursorShape>IBeamCursor</cursorShape>
           </property>
+          <property name="frameShape">
+           <enum>QFrame::Shape::NoFrame</enum>
+          </property>
           <property name="text">
-           <string/>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="textFormat">
+           <enum>Qt::TextFormat::MarkdownText</enum>
           </property>
           <property name="scaledContents">
            <bool>false</bool>
@@ -108,6 +114,25 @@
           </property>
           <property name="textInteractionFlags">
            <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByMouse</set>
+          </property>
+          <property name="buddy">
+           <cstring></cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit">
+          <property name="focusPolicy">
+           <enum>Qt::FocusPolicy::StrongFocus</enum>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="frame">
+           <bool>true</bool>
+          </property>
+          <property name="echoMode">
+           <enum>QLineEdit::EchoMode::NoEcho</enum>
           </property>
          </widget>
         </item>
@@ -139,7 +164,7 @@
            <iconset theme="QIcon::ThemeIcon::DocumentSend"/>
           </property>
           <property name="shortcut">
-           <string>Space</string>
+           <string>Ctrl+R</string>
           </property>
          </widget>
         </item>
@@ -256,5 +281,25 @@
   </widget>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>lineEdit</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>textChange(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>417</x>
+     <y>271</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>500</x>
+     <y>187</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>textChange(QString)</slot>
+ </slots>
 </ui>
